@@ -136,10 +136,10 @@ read_word:
         jnl .E
         mov byte[r8+rcx], al
         inc rcx
-        jmp .L
+        jmp .loop
     .b:
         cmp rcx, 0
-        je .L
+        je .loop
     .ext:   
         mov byte[r8+rcx], 0
         mov rax, r8
