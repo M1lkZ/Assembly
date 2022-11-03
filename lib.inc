@@ -1,7 +1,6 @@
 %define SYS_EXT 60
 %define SYS_WRITE 1
 %define ASCII_SHIFT 48
-%define MAGIC_ONE 1
 %define HEX_32 0x20
 %define HEX_9 0x9
 %define HEX_10 0xA
@@ -61,7 +60,7 @@ print_uint:
     .loop:
         xor rdx, rdx
         div r8
-        add rdx,ASCII_SHIFT
+        add rdx, ASCII_SHIFT
         dec rsp
         mov [rsp], dl
         test rax, rax
