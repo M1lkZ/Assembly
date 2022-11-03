@@ -1,8 +1,16 @@
+%define SYS_EXT 60
+%define SYS_WRITE 1
+%define ASCII_SHIFT 48
+%define MAGIC_ONE 1
+%define HEX_32 0x20
+%define HEX_9 0x9
+%define HEX_10 0xA
+
 section .text
  
 ; Принимает код возврата и завершает текущий процесс
 exit: 
-    mov rax, 60
+    mov rax, SYS_EXT
     syscall
 
 ; Принимает указатель на нуль-терминированную строку, возвращает её длину
@@ -37,7 +45,7 @@ print_char:
 ; Переводит строку (выводит символ с кодом 0xA)
 print_newline:
     mov rdi, 10
-    jmp print_char
+    call print_char
 
 ; Выводит беззнаковое 8-байтовое число в десятичном формате 
 ; Совет: выделите место в стеке и храните там результаты деления
@@ -53,7 +61,7 @@ print_uint:
     .loop:
         xor rdx, rdx
         div r8
-        add rdx,48
+        add rdx,ASCII_SHIFT
         dec rsp
         mov [rsp], dl
         test rax, rax
@@ -74,7 +82,7 @@ print_int:
     call print_char
     pop rdi
     neg rdi
-    jmp print_uint
+    call print_uint
 
 ; Принимает два указателя на нуль-терминированные строки, возвращает 1 если они равны, 0 иначе
 string_equals:
@@ -124,11 +132,11 @@ read_word:
         push rcx
         call read_char
         pop rcx
-        cmp rax, 0x20
+        cmp rax, HEX_32
         je .b
-        cmp rax, 0x9
+        cmp rax, HEX_9
         je .b
-        cmp rax, 0xA
+        cmp rax, HEX_10
         je .b
         cmp rax, 0
         jz .ext
