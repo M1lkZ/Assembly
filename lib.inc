@@ -4,12 +4,13 @@
 %define HEX_32 0x20
 %define HEX_9 0x9
 %define HEX_10 0xA
+%define HEX_BYTE 0x0f
 
 section .text
  
 ; Принимает код возврата и завершает текущий процесс
 exit: 
-    mov rax, SYS_EXT
+    mov rax, 60
     syscall
 
 ; Принимает указатель на нуль-терминированную строку, возвращает её длину
@@ -81,7 +82,7 @@ print_int:
     call print_char
     pop rdi
     neg rdi
-    call print_uint
+    jmp print_uint
 
 ; Принимает два указателя на нуль-терминированные строки, возвращает 1 если они равны, 0 иначе
 string_equals:
@@ -135,7 +136,7 @@ read_word:
         je .b
         cmp rax, HEX_9
         je .b
-        cmp rax, HEX_10
+        cmp rax, HEX_32
         je .b
         cmp rax, 0
         jz .ext
@@ -172,7 +173,7 @@ parse_uint:
         ja .ext
         xor rdx, rdx 
         mul r8
-        and sil, 0x0f
+        and sil, HEX_BYTE
         add rax, rsi
         inc rcx 
         jmp .loop
